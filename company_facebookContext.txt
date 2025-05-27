@@ -1,0 +1,96 @@
+1. Executive Summary
+The proposed platform is an internal, employee-facing web application designed to act as a centralized digital space for collaboration, engagement, and productivity enhancement. It draws inspiration from modern social networking platforms like Facebook, tailored specifically for internal corporate use. This platform aims to break down silos between departments, improve information access, and create a more connected workplace culture.
+
+2. Objectives
+Enhance internal communication and knowledge sharing
+Centralize access to important HR and IT resources
+Foster a culture of recognition and peer appreciation
+Provide self-service support for HR-related queries
+Increase employee engagement and collaboration across departments
+
+3. Scope
+In Scope:
+Web-based application accessible to all company employees
+Features including news feed, HR links, ticketing, blogs, appreciation posts, and HR chatbot
+Admin capabilities for content and user management
+Out of Scope:
+Public access or external user support
+Mobile application (initial phase)
+Integration with third-party tools beyond initial scope
+
+4. Key Features
+
+1. Tech & AI News Feed
+Curated feed displaying the latest news and trends in tech and AI
+Ability to like, bookmark, and share articles internally
+Category/tag-based filtering (AI, Security, Development, etc.)
+"Trending" section based on internal user engagement
+
+
+2. Quick Access HR Portal Links
+Visual dashboard with frequently accessed HR and admin tools (e.g., Payroll, Leave Management, HRMS)
+Configurable by admin with click analytics
+Personalization option to reorder or favorite links
+
+3. HR/IT Case Management System
+Employees can raise support requests categorized by department (HR, IT, Admin)
+Case tracking with lifecycle stages (New, In Progress, Resolved, Escalated)
+Assignment to department POCs with email notifications
+Dashboard view for users to track their tickets and status
+SLA indicators and response time tracking
+
+4. Blog Section
+Employees can author and publish blogs
+Blogs can include images, formatting, and tags
+Comment and like functionality for peer interaction
+Tag-based blog filtering and author search
+"Editor's pick" and "Most Liked" sections
+
+5. Appreciation Wall
+Peer-to-peer recognition posts with customizable templates (e.g., “Kudos”, “Thank You”, “Great Job”)
+Publicly visible on the platform with comments and likes
+Tagging of department, team, and values (e.g., Teamwork, Innovation)
+Monthly leaderboard based on appreciation activity
+
+6. HR Chatbot (RAG-based)
+Conversational interface to answer HR document-related queries
+Pulls information directly from uploaded HR documents and policies
+Searchable Q&A history
+Available 24/7 for self-service support
+
+7. Employee Directory
+Searchable list of employees with department, role, and contact information
+Profile pages with bio, recent blogs, recognitions received
+Optional integration with organization chart
+
+8. Event Announcements & Calendar
+Internal announcements for company-wide or department-specific events
+Company calendar view with filters for events, training, holidays
+RSVP functionality for events
+
+10. User Dashboard
+Personalized view showing recent activities, blog drafts, case updates, and appreciations
+Quick actions panel to create a new blog, raise a ticket, or appreciate someone
+
+11. Admin Panel
+User and role management
+Content moderation (blogs, comments, appreciations)
+Configuring HR links, news sources, chatbot knowledge base
+Analytics dashboard showing usage metrics
+
+5. User Roles
+Employee:
+View and interact with all features
+Create blogs, tickets, and appreciation posts
+Admin:
+Manage users, configure platform settings
+Moderate content, assign cases, and manage news and links
+Department POC:
+Manage and resolve cases assigned to their department
+
+
+
+
+
+
+
