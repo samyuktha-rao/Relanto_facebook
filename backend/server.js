@@ -8,6 +8,7 @@ const bcrypt = require('bcryptjs');
 const path = require('path');
 const mysql = require('mysql2/promise');
 const { getAnswer } = require('./services/chatbotService');
+require('dotenv').config();
 const app = express();
 
 app.use(cors());
@@ -55,10 +56,10 @@ app.use(express.json());
 
 // --- MySQL Database Connection ---
 const db = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'password', // <-- Replace with your MySQL root password
-  database: 'internal_facebook',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 // --- Helper to fetch AI news from Google News RSS ---
