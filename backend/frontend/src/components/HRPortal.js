@@ -13,7 +13,8 @@ const hrLinks = [
     id: 1,
     name: 'Payroll System',
     desc: 'Access your payslips and tax information.',
-    icon: <AttachMoneyIcon sx={{ fontSize: 40, color: '#00e6e6' }} />, url: '#',
+    icon: <AttachMoneyIcon sx={{ fontSize: 40, color: '#00e6e6' }} />, 
+    url: 'https://relanto.keka.com/#/myfinances/summary',
     btn: 'Access Payroll System',
   },
   {
@@ -25,18 +26,11 @@ const hrLinks = [
     btn: 'Access Leave Management',
   },
   {
-    id: 3,
-    name: 'HRMS Portal',
-    desc: 'Update personal details and access HR policies.',
-    icon: <BadgeIcon sx={{ fontSize: 40, color: '#00e6e6' }} />, url: '#',
-    btn: 'Access HRMS Portal',
-  },
-  // Directory removed as per requirements
-  {
     id: 5,
     name: 'Document Center',
     desc: 'Access company policies and forms.',
-    icon: <DescriptionIcon sx={{ fontSize: 40, color: '#00e6e6' }} />, url: '#',
+    icon: <DescriptionIcon sx={{ fontSize: 40, color: '#00e6e6' }} />, 
+    url: '#',
     btn: 'Access Document Center',
   },  {
     id: 6,
@@ -105,9 +99,8 @@ function HRPortal() {
                 </Stack>
                 <Button 
                   onClick={link.name === 'Document Center' ? handleOpenDocuments : undefined}
-                  href={link.name === 'Document Center' ? undefined : link.url} 
-                  variant="contained" 
-                  sx={{ mt: 2, bgcolor: '#00e6e6', color: '#0a1a2b', fontWeight: 700, borderRadius: 2, boxShadow: 2, '&:hover': { bgcolor: '#00bcd4' } }}
+                  href={link.name === 'Document Center' ? undefined : link.url}
+                  sx={{ bgcolor: '#FF5733', color: '#fff' }}
                 >
                   {link.btn}
                 </Button>
@@ -145,13 +138,7 @@ function HRPortal() {
                 <Button
                   href={doc.path}
                   target="_blank"
-                  variant="contained"
-                  size="small"
-                  sx={{ 
-                    bgcolor: '#00e6e6',
-                    color: '#0a1a2b',
-                    '&:hover': { bgcolor: '#00bcd4' }
-                  }}
+                  sx={{ bgcolor: '#FF5733', color: '#fff' }}
                 >
                   View
                 </Button>

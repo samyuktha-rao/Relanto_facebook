@@ -1,4 +1,3 @@
-
 // Main navigation and page routing for the internal Facebook app
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
@@ -30,6 +29,7 @@ import Chatbot from './components/Chatbot';
 import Events from './components/Events';
 import Dashboard from './components/Dashboard';
 import AdminPanel from './components/AdminPanel';
+import img from './pictures/image.png';
 
 
 // Add a custom theme for vibrant colors
@@ -147,12 +147,12 @@ function App() {
               display: { xs: 'none', sm: 'block' },
             }}
           >
-            <Toolbar>
-              <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 1, color: '#00a8cc' }}>
-                Menu
-              </Typography>
+            <Toolbar sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px 0' }}>
+              <div style={{ backgroundColor: '#ffffff', padding: '5px', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <img src={img} alt="Relanto Logo" style={{ height: '40px', cursor: 'pointer' }} />
+              </div>
             </Toolbar>
-            <List>
+            <List sx={{ padding: 0 }}>
               {filteredNavItems.map((item, idx) => (
                 <ListItem key={item.text} disablePadding>
                   <ListItemButton
@@ -165,7 +165,7 @@ function App() {
                       mx: 1,
                       my: 0.5,
                       color: activeIndex === idx ? '#00a8cc' : '#fff',
-                      background: activeIndex === idx ? 'rgba(0,168,204,0.12)' : 'none',
+                      background: activeIndex === idx ? 'rgba(0,168,204,0.12)' : '#1a2233',
                       transition: 'background 0.2s, color 0.2s',
                       '&:hover': {
                         background: 'rgba(0,168,204,0.18)',
@@ -203,11 +203,11 @@ function App() {
                   </Typography>
                 )}
                 {user && (
-                  <Button color="inherit" sx={{ ml: 2, fontWeight: 700 }} onClick={() => { localStorage.removeItem('user'); window.location.reload(); }}>Logout</Button>
+                  <Button color="inherit" sx={{ ml: 2, fontWeight: 700, bgcolor: '#FF5733', color: '#fff' }} onClick={() => { localStorage.removeItem('user'); window.location.reload(); }}>Logout</Button>
                 )}
               </Toolbar>
             </AppBar>
-            <Container maxWidth="lg" sx={{ bgcolor: '#22304a', borderRadius: 4, boxShadow: 3, p: { xs: 1, sm: 3 }, minHeight: '80vh', transition: 'box-shadow 0.3s', color: '#fff' }}>
+            <Container maxWidth="lg" sx={{ bgcolor: '#1a2233', borderRadius: 4, boxShadow: 3, p: { xs: 1, sm: 3 }, minHeight: '80vh', transition: 'box-shadow 0.3s', color: '#fff' }}>
               <Routes>
                 <Route path="/" element={<NewsFeed />} />
                 <Route path="/hr" element={<HRPortal />} />

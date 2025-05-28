@@ -211,63 +211,50 @@ app.post('/api/appreciations', async (req, res) => {
   res.json({ id: result.insertId, from, to, type, message, likes: 0 });
 });
 
-// Employee Directory (still in-memory, update if you add to DB)
-app.get('/api/employees', (req, res) => res.json([]));
+// --- Reactions API ---
 
-// Events (still in-memory, update if you add to DB)
-app.get('/api/events', (req, res) => res.json([]));
-app.post('/api/events', async (req, res) => {
-  // Require role in request body (sent from frontend)
-  const { title, date, department, role } = req.body;
-  if (role !== 'admin') {
-    return res.status(403).json({ error: 'Only admins can announce events.' });
+// Add or update a reaction for an appreciation post
+app.post('/api/appreciations/:id/reactions', async (req, res) => {
+  const { id } = req.params; // Appreciation post ID
+  const { reactionType, userId } = req.body;
+
+  if (!reactionType || !userId) {
+    return res.status(400).json({ error: 'Missing reactionType or userId' });
   }
-  // You can add more validation here if needed
-  // Save event to DB (if you have a table), else just echo back for now
-  // Example: const [result] = await db.query('INSERT INTO events (title, date, department) VALUES (?, ?, ?)', [title, date, department]);
-  // For now, just echo back
-  res.json({ id: Date.now(), title, date, department });
-});
 
-// Dashboard (returns summary from DB)
-app.get('/api/dashboard', async (req, res) => {
-  const [recentBlogs] = await db.query('SELECT * FROM blogs ORDER BY id DESC LIMIT 3');
-  recentBlogs.forEach(row => row.tags = row.tags ? row.tags.split(',') : []);
-  const [openCases] = await db.query("SELECT * FROM cases WHERE status != 'Resolved'");
-  res.json({
-    recentBlogs,
-    openCases,
-    appreciations: [], // Not implemented in DB
-  });
-});
-
-// Admin (get all data from DB where possible)
-app.get('/api/admin', async (req, res) => {
-  const [news] = await db.query('SELECT * FROM news');
-  const [casesRows] = await db.query('SELECT * FROM cases');
-  const [blogsRows] = await db.query('SELECT * FROM blogs');
-  blogsRows.forEach(row => row.tags = row.tags ? row.tags.split(',') : []);
-  res.json({
-    news,
-    hrLinks: [],
-    cases: casesRows,
-    blogs: blogsRows,
-    appreciations: [],
-    employees: [],
-    events: [],
-  });
-});
-
-// Chatbot endpoint
-app.post('/api/chatbot', async (req, res) => {
-  const { question } = req.body;
   try {
-    const answer = await getAnswer(question);
-    res.json({ answer });
+    // Check if the user has already reacted to this post
+    const [existingReaction] = await db.query(
+      'SELECT * FROM reactions WHERE appreciation_id = ? AND user_id = ?',
+      [id, userId]
+    );
+
+    if (existingReaction.length > 0) {
+      // Update the reaction type if it already exists
+      await db.query(
+        'UPDATE reactions SET reaction_type = ? WHERE id = ?',
+        [reactionType, existingReaction[0].id]
+      );
+    } else {
+      // Insert a new reaction
+      await db.query(
+        'INSERT INTO reactions (appreciation_id, user_id, reaction_type) VALUES (?, ?, ?)',
+        [id, userId, reactionType]
+      );
+    }
+
+    // Fetch the updated list of reactions for the appreciation post
+    const [reactions] = await db.query(
+      'SELECT reaction_type, COUNT(*) as count FROM reactions WHERE appreciation_id = ? GROUP BY reaction_type',
+      [id]
+    );
+
+    res.json({ reactions });
   } catch (error) {
-    console.error('Error in chatbot endpoint:', error);
-    res.status(500).json({ error: 'Failed to get answer' });
+    console.error('Error handling reaction:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-app.listen(5000, () => console.log('Backend running on port 5000'));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

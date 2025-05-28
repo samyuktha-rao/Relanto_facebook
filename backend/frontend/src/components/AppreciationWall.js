@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, CardContent, Typography, Button, Stack, TextField, Box, Chip, Fade } from '@mui/material';
+import { Card, CardContent, Typography, Button, Stack, TextField, Box, Chip, Fade, Tooltip } from '@mui/material';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 const appreciationColors = [
@@ -14,16 +14,28 @@ function AppreciationWall({ animated }) {
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/appreciations').then(res => {
-      setApps(res.data);
-      setShowAnim(res.data.map(() => false));
+      const updatedData = res.data.map(app => ({
+        ...app,
+        reactions: app.reactions || { clap: [], heart: [], thumbsUp: [] },
+      }));
+      setApps(updatedData);
+      setShowAnim(updatedData.map(() => false));
       if (animated) {
         // Animate each card in sequence
-        res.data.forEach((_, i) => setTimeout(() => setShowAnim(sa => sa.map((v, idx) => idx === i ? true : v)), 200 * i));
+        updatedData.forEach((_, i) => setTimeout(() => setShowAnim(sa => sa.map((v, idx) => idx === i ? true : v)), 200 * i));
       } else {
-        setShowAnim(res.data.map(() => true));
+        setShowAnim(updatedData.map(() => true));
       }
     });
   }, [animated]);
+
+  useEffect(() => {
+    // Assuming the logged-in user's name is stored in localStorage
+    const loggedInUser = JSON.parse(localStorage.getItem('user'));
+    if (loggedInUser) {
+      setForm(prevForm => ({ ...prevForm, from: loggedInUser.name }));
+    }
+  }, []);
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -43,6 +55,23 @@ function AppreciationWall({ animated }) {
     });
   };
 
+  const handleReaction = (id, reactionType) => {
+    const loggedInUser = JSON.parse(localStorage.getItem('user'));
+    if (!loggedInUser) {
+      alert('You must be logged in to react.');
+      return;
+    }
+
+    axios.post(`http://localhost:5000/api/appreciations/${id}/reactions`, {
+      reactionType,
+      userId: loggedInUser.id,
+    })
+      .then(res => {
+        setApps(apps.map(app => app.id === id ? { ...app, reactions: res.data.reactions } : app));
+      })
+      .catch(err => console.error('Error updating reactions:', err));
+  };
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom sx={{color: '#fff', fontWeight: 800, letterSpacing: 1 }}>
@@ -57,7 +86,7 @@ function AppreciationWall({ animated }) {
             onChange={handleChange}
             required
             sx={{ bgcolor: '#fff', borderRadius: 2, minWidth: 120 }}
-            InputProps={{ style: { color: '#000', fontWeight: 600 } }}
+            InputProps={{ style: { color: '#000', fontWeight: 600 }, readOnly: true }}
             InputLabelProps={{ style: { color: '#000' } }}
           />
           <TextField
@@ -90,7 +119,7 @@ function AppreciationWall({ animated }) {
             InputProps={{ style: { color: '#000', fontWeight: 600 } }}
             InputLabelProps={{ style: { color: '#000' } }}
           />
-          <Button type="submit" variant="contained" color="secondary" sx={{ boxShadow: 2 }}>
+          <Button type="submit" variant="contained" color="secondary" sx={{ boxShadow: 2, bgcolor: '#FF5733', color: '#fff' }}>
             Appreciate
           </Button>
         </Stack>
@@ -128,6 +157,32 @@ function AppreciationWall({ animated }) {
                   {app.message}
                 </Typography>
                 <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>Likes: {app.likes}</Typography>
+                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                  {['clap', 'heart', 'thumbsUp'].map(reactionType => (
+                    <Tooltip
+                      key={reactionType}
+                      title={
+                        (app.reactions?.[reactionType] || []).length > 0
+                          ? (app.reactions[reactionType] || []).map(user => user.name).join(', ')
+                          : 'Be the first to react!'
+                      }
+                      arrow
+                    >
+                      <Button
+                        variant="text"
+                        startIcon={
+                          reactionType === 'clap' ? <span role="img" aria-label="clap">👏</span> :
+                          reactionType === 'heart' ? <span role="img" aria-label="heart">❤️</span> :
+                          <span role="img" aria-label="thumbs up">👍</span>
+                        }
+                        sx={{ color: reactionType === 'clap' ? '#6C63FF' : reactionType === 'heart' ? '#FF6584' : '#43E6FC', fontWeight: 700 }}
+                        onClick={() => handleReaction(app.id, reactionType)}
+                      >
+                        {reactionType.charAt(0).toUpperCase() + reactionType.slice(1)}
+                      </Button>
+                    </Tooltip>
+                  ))}
+                </Box>
               </CardContent>
               <Box sx={{
                 position: 'absolute',

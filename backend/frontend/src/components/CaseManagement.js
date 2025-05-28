@@ -31,8 +31,8 @@ function CaseManagement() {
             value={form.user}
             onChange={handleChange}
             required
-            sx={{ minWidth: 160, bgcolor: '#fff', borderRadius: 2 }}
-            InputProps={{ style: { color: '#142850' } }}
+            sx={{ minWidth: 160, bgcolor: '#f5f5f5', borderRadius: 2 }}
+            InputProps={{ style: { color: '#000' } }}
           />
           <TextField
             label="Department"
@@ -41,26 +41,26 @@ function CaseManagement() {
             value={form.department}
             onChange={handleChange}
             required
-            sx={{ minWidth: 160, bgcolor: '#fff', borderRadius: 2 }}
-            InputLabelProps={{ style: { color: '#142850', fontWeight: 700 } }}
+            sx={{ minWidth: 160, bgcolor: '#f5f5f5', borderRadius: 2 }}
+            InputLabelProps={{ style: { color: '#b0b8c1', fontWeight: 700 } }}
             SelectProps={{
-              sx: { color: '#142850', fontWeight: 700, backgroundColor: '#fff' },
+              sx: { color: '#000', fontWeight: 700, backgroundColor: '#f5f5f5' },
               MenuProps: {
                 PaperProps: {
                   sx: {
-                    bgcolor: '#fff',
-                    color: '#142850',
+                    bgcolor: '#f5f5f5',
+                    color: '#000',
                     fontWeight: 700,
                   },
                 },
               },
             }}
-            InputProps={{ style: { color: '#142850', fontWeight: 700, backgroundColor: '#fff' } }}
+            InputProps={{ style: { color: '#000', fontWeight: 700, backgroundColor: '#f5f5f5' } }}
           >
-            <MenuItem value="" disabled style={{ color: '#142850', fontWeight: 700 }}>Select Department</MenuItem>
-            <MenuItem value="HR" style={{ color: '#142850', fontWeight: 700 }}>HR</MenuItem>
-            <MenuItem value="IT" style={{ color: '#142850', fontWeight: 700 }}>IT</MenuItem>
-            <MenuItem value="Admin" style={{ color: '#142850', fontWeight: 700 }}>Admin</MenuItem>
+            <MenuItem value="" disabled style={{ color: '#000', fontWeight: 700 }}>Select Department</MenuItem>
+            <MenuItem value="HR" style={{ color: '#000', fontWeight: 700 }}>HR</MenuItem>
+            <MenuItem value="IT" style={{ color: '#000', fontWeight: 700 }}>IT</MenuItem>
+            <MenuItem value="Admin" style={{ color: '#000', fontWeight: 700 }}>Admin</MenuItem>
           </TextField>
           <TextField
             label="Priority"
@@ -69,25 +69,25 @@ function CaseManagement() {
             value={form.priority}
             onChange={handleChange}
             required
-            sx={{ minWidth: 140, bgcolor: '#fff', borderRadius: 2 }}
-            InputLabelProps={{ style: { color: '#142850', fontWeight: 700 } }}
+            sx={{ minWidth: 140, bgcolor: '#f5f5f5', borderRadius: 2 }}
+            InputLabelProps={{ style: { color: '#b0b8c1', fontWeight: 700 } }}
             SelectProps={{
-              sx: { color: '#142850', fontWeight: 700, backgroundColor: '#fff' },
+              sx: { color: '#000', fontWeight: 700, backgroundColor: '#f5f5f5' },
               MenuProps: {
                 PaperProps: {
                   sx: {
-                    bgcolor: '#fff',
-                    color: '#142850',
+                    bgcolor: '#f5f5f5',
+                    color: '#000',
                     fontWeight: 700,
                   },
                 },
               },
             }}
-            InputProps={{ style: { color: '#142850', fontWeight: 700, backgroundColor: '#fff' } }}
+            InputProps={{ style: { color: '#000', fontWeight: 700, backgroundColor: '#f5f5f5' } }}
           >
-            <MenuItem value="" disabled style={{ color: '#142850', fontWeight: 700 }}>Select priority</MenuItem>
-            <MenuItem value="Low" style={{ color: '#142850', fontWeight: 700 }}>Low</MenuItem>
-            <MenuItem value="Medium" style={{ color: '#142850', fontWeight: 700, backgroundColor: '#ff7043', color: '#fff' }}>Medium</MenuItem>
+            <MenuItem value="" disabled style={{ color: '#000', fontWeight: 700 }}>Select priority</MenuItem>
+            <MenuItem value="Low" style={{ color: '#000', fontWeight: 700 }}>Low</MenuItem>
+            <MenuItem value="Medium" style={{ color: '#000', fontWeight: 700, backgroundColor: '#ff7043' }}>Medium</MenuItem>
             <MenuItem value="High" style={{ color: '#fff', fontWeight: 700, backgroundColor: '#d32f2f' }}>High</MenuItem>
           </TextField>
           <TextField
@@ -96,17 +96,17 @@ function CaseManagement() {
             value={form.subject}
             onChange={handleChange}
             required
-            sx={{ minWidth: 200, bgcolor: '#fff', borderRadius: 2 }}
-            InputProps={{ style: { color: '#142850' } }}
+            sx={{ minWidth: 200, bgcolor: '#f5f5f5', borderRadius: 2 }}
+            InputProps={{ style: { color: '#000' } }}
           />
-          <Button type="submit" variant="contained" sx={{ height: 48, minWidth: 120, fontWeight: 700, borderRadius: 3, bgcolor: '#1565c0', color: '#fff', '&:hover': { bgcolor: '#00a8cc' } }}>
+          <Button type="submit" variant="contained" sx={{ height: 48, minWidth: 120, fontWeight: 700, borderRadius: 3, bgcolor: '#FF5733', color: '#fff', '&:hover': { bgcolor: '#C70039' } }}>
             Raise Ticket
           </Button>
         </Stack>
       </form>
       <Stack spacing={2}>
         {cases.map(c => (
-          <Card key={c.id} sx={{ mb: 2 }}>
+          <Card key={c.id} sx={{ mb: 2, bgcolor: '#1a2233', color: '#fff' }}>
             <CardContent>
               <Typography variant="h6">{c.subject}</Typography>
               <Typography variant="body2">User: {c.user} | Dept: {c.department} | Priority: {c.priority || 'N/A'} | Status: {c.status}</Typography>

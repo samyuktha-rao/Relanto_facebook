@@ -43,7 +43,7 @@ function Login({ onSwitch }) {
             <TextField label="Email" name="email" value={form.email} onChange={handleChange} type="email" required />
             <TextField label="Password" name="password" value={form.password} onChange={handleChange} type="password" required />
             {error && <Typography color="error" fontSize={14}>{error}</Typography>}
-            <Button type="submit" variant="contained" sx={{ fontWeight: 700, bgcolor: '#1976d2', color: '#fff', borderRadius: 2, py: 1.2 }}>Log In</Button>
+            <Button type="submit" variant="contained" sx={{ fontWeight: 700, bgcolor: '#FF5733', color: '#fff', borderRadius: 2, py: 1.2 }}>Log In</Button>
           </Stack>
         </form>
         <Typography sx={{ mt: 3, textAlign: 'center', color: '#555' }}>

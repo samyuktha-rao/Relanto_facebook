@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, CardContent, Typography, Button, Stack, TextField, Box, Chip, Avatar, Grid, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Input } from '@mui/material';
@@ -63,8 +62,8 @@ function BlogSection() {
           </form>
         </DialogContent>
         <DialogActions sx={{ bgcolor: '#fff' }}>
-          <Button onClick={() => setOpen(false)} color="secondary" sx={{ color: '#1976d2' }}>Cancel</Button>
-          <Button type="submit" form="blog-form" variant="contained" sx={{ bgcolor: '#142850', color: '#fff', fontWeight: 700 }}>Submit</Button>
+          <Button onClick={() => setOpen(false)} color="secondary" sx={{ color: '#FF5733' }}>Cancel</Button>
+          <Button type="submit" form="blog-form" variant="contained" sx={{ bgcolor: '#FF5733', color: '#fff', fontWeight: 700 }}>Submit</Button>
         </DialogActions>
       </Dialog>
       <Grid container spacing={4}>

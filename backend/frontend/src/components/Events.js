@@ -116,7 +116,7 @@ function Events() {
         <Button
           variant="contained"
           color={showCalendar === 'India' ? 'primary' : 'secondary'}
-          sx={{ fontWeight: 700, borderRadius: 3, px: 3, fontSize: 16 }}
+          sx={{ bgcolor: '#FF5733', color: '#fff' }}
           onClick={() => setShowCalendar(showCalendar === 'India' ? null : 'India')}
         >
           India Calendar
@@ -124,7 +124,7 @@ function Events() {
         <Button
           variant="contained"
           color={showCalendar === 'USA' ? 'primary' : 'secondary'}
-          sx={{ fontWeight: 700, borderRadius: 3, px: 3, fontSize: 16 }}
+          sx={{ bgcolor: '#FF5733', color: '#fff' }}
           onClick={() => setShowCalendar(showCalendar === 'USA' ? null : 'USA')}
         >
           USA Calendar
@@ -209,7 +209,7 @@ function Events() {
             <TextField label="Title" name="title" value={form.title} onChange={handleChange} required sx={{ bgcolor: '#fff', borderRadius: 2, minWidth: 140 }} InputProps={{ style: { color: '#142850', fontWeight: 600 } }} />
             <TextField label="Date" name="date" type="date" value={form.date} onChange={handleChange} InputLabelProps={{ shrink: true }} required sx={{ bgcolor: '#fff', borderRadius: 2, minWidth: 120 }} InputProps={{ style: { color: '#142850', fontWeight: 600 } }} />
             <TextField label="Department" name="department" value={form.department} onChange={handleChange} required sx={{ bgcolor: '#fff', borderRadius: 2, minWidth: 120 }} InputProps={{ style: { color: '#142850', fontWeight: 600 } }} />
-            <Button type="submit" variant="contained" sx={{ height: 48, minWidth: 120, fontWeight: 700, borderRadius: 3, bgcolor: '#1565c0', color: '#fff', '&:hover': { bgcolor: '#00a8cc' } }}>Announce</Button>
+            <Button type="submit" variant="contained" sx={{ height: 48, minWidth: 120, fontWeight: 700, borderRadius: 3, bgcolor: '#FF5733', color: '#fff', '&:hover': { bgcolor: '#C70039' } }}>Announce</Button>
           </Stack>
         </form>
       )}
