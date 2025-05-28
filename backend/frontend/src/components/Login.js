@@ -37,7 +37,7 @@ function Login({ onSwitch }) {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#e9ebee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <Paper elevation={6} sx={{ p: 5, borderRadius: 4, minWidth: 340, maxWidth: 380 }}>
-        <Typography variant="h4" sx={{ fontWeight: 900, color: '#1976d2', mb: 2, textAlign: 'center', letterSpacing: 1 }}>Sign In</Typography>
+        <Typography variant="h4" sx={{ fontWeight: 900, color: '#1976d2', mb: 2, textAlign: 'center', letterSpacing: 1 }}>Log In</Typography>
         <form onSubmit={handleSubmit}>
           <Stack spacing={2}>
             <TextField label="Email" name="email" value={form.email} onChange={handleChange} type="email" required />
