@@ -12,10 +12,10 @@ async function createAdmin() {
     database: 'internal_facebook',
   });
   const [result] = await db.execute(
-    'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+    'INSERT INTO employees (full_name, username, password, designation) VALUES (?, ?, ?, ?)',
     ['Admin User', 'admin@company.com', hash, 'admin']
   );
-  console.log('Admin user created with id:', result.insertId);
+  console.log('Admin employee created with id:', result.insertId);
   await db.end();
 }
 

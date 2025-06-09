@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, CardContent, Typography, Button, Stack, TextField, Box, Tabs, Tab } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 
 // Example holiday data for India and USA
 const holidaysData = {
@@ -46,6 +55,8 @@ function Events() {
   const [form, setForm] = useState({ title: '', date: '', department: '' });
   const [tab, setTab] = useState('India');
   const [showCalendar, setShowCalendar] = useState(null); // null | 'India' | 'USA'
+  const [calendarEvents, setCalendarEvents] = useState([]);
+  const [open, setOpen] = useState(false);
 
   // Get user from localStorage
   const user = React.useMemo(() => {
@@ -56,8 +67,14 @@ function Events() {
     }
   }, []);
 
+  // Replaced Axios call with static data for events
   useEffect(() => {
-    axios.get('http://localhost:5000/api/events').then(res => setEvents(res.data));
+    const staticEvents = [
+      { id: 1, title: 'Annual Day Celebration', date: '2025-06-15', department: 'HR' },
+      { id: 2, title: 'Tech Conference', date: '2025-07-20', department: 'IT' },
+      { id: 3, title: 'Health Camp', date: '2025-08-10', department: 'Admin' },
+    ];
+    setEvents(staticEvents);
   }, []);
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
@@ -66,7 +83,7 @@ function Events() {
   const handleSubmit = e => {
     e.preventDefault();
     // Send role with the event creation request for backend validation
-    axios.post('http://localhost:5000/api/events', { ...form, role: user?.role }).then(res => {
+    axios.post('http://localhost:5001/api/events', { ...form, role: user?.role }).then(res => {
       setEvents([...events, res.data]);
       setForm({ title: '', date: '', department: '' });
     }).catch(err => {
@@ -74,6 +91,27 @@ function Events() {
         alert('Only admins can announce events.');
       }
     });
+  };
+
+  const handleCalendarToggle = (region) => {
+    const holidays = holidaysData[region].map(h => ({
+      title: h.name,
+      start: h.date,
+      color: region === 'India' ? 'orange' : 'blue',
+    }));
+    setCalendarEvents(holidays);
+  };
+
+  const handleAddEvent = () => {
+    const newEvent = {
+      id: events.length + 1,
+      title: form.title,
+      date: form.date,
+      department: form.department,
+    };
+    setEvents([...events, newEvent]);
+    setForm({ title: '', date: '', department: '' });
+    setOpen(false);
   };
 
   // --- For pretty calendar like screenshot ---
@@ -109,6 +147,9 @@ function Events() {
     '2025-10-01', // Ayudha Puja/Mahanavami
   ];
 
+  // Highlight today's date in the calendar
+  const today = new Date().toISOString().slice(0, 10);
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>Event Announcements & Calendar <CalendarMonthIcon sx={{ fontSize: 32, ml: 1, verticalAlign: 'middle' }} /></Typography>
@@ -117,7 +158,10 @@ function Events() {
           variant="contained"
           color={showCalendar === 'India' ? 'primary' : 'secondary'}
           sx={{ bgcolor: '#FF5733', color: '#fff' }}
-          onClick={() => setShowCalendar(showCalendar === 'India' ? null : 'India')}
+          onClick={() => {
+            setShowCalendar(showCalendar === 'India' ? null : 'India');
+            handleCalendarToggle('India');
+          }}
         >
           India Calendar
         </Button>
@@ -125,81 +169,21 @@ function Events() {
           variant="contained"
           color={showCalendar === 'USA' ? 'primary' : 'secondary'}
           sx={{ bgcolor: '#FF5733', color: '#fff' }}
-          onClick={() => setShowCalendar(showCalendar === 'USA' ? null : 'USA')}
+          onClick={() => {
+            setShowCalendar(showCalendar === 'USA' ? null : 'USA');
+            handleCalendarToggle('USA');
+          }}
         >
           USA Calendar
         </Button>
       </Stack>
       {showCalendar && (
-        <Box sx={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          bgcolor: 'rgba(30,40,60,0.18)',
-          zIndex: 2000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <Box sx={{
-            bgcolor: '#fff',
-            borderRadius: 3,
-            p: { xs: 2, sm: 4 },
-            minWidth: { xs: '90vw', sm: 540 },
-            maxWidth: { xs: '98vw', sm: 900 },
-            width: { xs: '98vw', sm: '70vw', md: '60vw', lg: '50vw' },
-            maxHeight: { xs: '90vh', sm: '90vh' },
-            overflowY: 'auto',
-            boxShadow: '0 8px 32px 0 rgba(20,40,80,0.18)',
-            border: '1.5px solid #e0e6ef',
-            position: 'relative',
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            gap: 4,
-          }}>
-            <Box sx={{ position: 'absolute', top: 18, right: 18, cursor: 'pointer', color: '#888', fontWeight: 900, fontSize: 28, zIndex: 10 }} onClick={() => setShowCalendar(null)}>
-              ×
-            </Box>
-            <Box sx={{ flex: 1, minWidth: 180 }}>
-              <Typography variant="h5" sx={{ fontWeight: 900, mb: 2, color: '#22304a', letterSpacing: 1 }}>Holidays</Typography>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: '#888', mb: 2 }}>{showCalendar} <span style={{ fontWeight: 400, fontSize: 18, marginLeft: 8 }}>2025</span></Typography>
-              <Stack spacing={1}>
-                {holidaysData[showCalendar].map((h, idx) => (
-                  <Stack key={idx} direction="row" alignItems="center" spacing={1} sx={{ mb: 0.5 }}>
-                    <Box sx={{
-                      minWidth: 54,
-                      height: 54,
-                      bgcolor: monthColors[getMonth(h.date)] || '#e0e6ef',
-                      color: '#22304a',
-                      borderRadius: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 700,
-                      fontSize: 16,
-                      mr: 2,
-                      boxShadow: '0 2px 8px 0 rgba(0,0,0,0.07)',
-                    }}>
-                      <Box sx={{ fontSize: 13, fontWeight: 700 }}>{getMonth(h.date)}</Box>
-                      <Box sx={{ fontSize: 22, fontWeight: 900 }}>{getDay(h.date)}</Box>
-                    </Box>
-                    <Box>
-                      <Typography sx={{ fontWeight: 700, color: '#22304a', fontSize: 17 }}>{h.name}</Typography>
-                      <Typography sx={{ fontWeight: 400, color: '#888', fontSize: 15 }}>{getWeekday(h.date)}</Typography>
-                    </Box>
-                    {floaterDates.includes(h.date) && (
-                      <Box sx={{ ml: 2, px: 1.5, py: 0.5, bgcolor: '#e5dfcf', color: '#7a6f4d', borderRadius: 1, fontWeight: 700, fontSize: 13, letterSpacing: 0.5 }}>
-                        FLOATER
-                      </Box>
-                    )}
-                  </Stack>
-                ))}
-              </Stack>
-            </Box>
-          </Box>
+        <Box sx={{ mt: 4 }}>
+          <FullCalendar
+            plugins={[dayGridPlugin]}
+            initialView="dayGridMonth"
+            events={calendarEvents}
+          />
         </Box>
       )}
       <Typography variant="h5" sx={{ mt: 4, mb: 2, color: '#fff', fontWeight: 800, letterSpacing: 1 }}>Other Events</Typography>
@@ -224,6 +208,32 @@ function Events() {
           </Card>
         ))}
       </Stack>
+      <IconButton
+        color="primary"
+        onClick={() => setOpen(true)}
+        sx={{ position: 'fixed', bottom: 16, right: 16, bgcolor: '#FF5733', color: '#fff', borderRadius: '50%', boxShadow: 2 }}
+      >
+        <AddIcon fontSize="large" />
+      </IconButton>
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ fontWeight: 800, color: '#1976d2', letterSpacing: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          New Event
+          <IconButton onClick={() => setOpen(false)}><CloseIcon /></IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ bgcolor: '#fff', color: '#222' }}>
+          <form id="event-form" onSubmit={handleAddEvent}>
+            <Stack spacing={2}>
+              <TextField label="Title" name="title" value={form.title} onChange={handleChange} required InputLabelProps={{ style: { color: '#222' } }} InputProps={{ style: { color: '#222' } }} />
+              <TextField label="Date" name="date" type="date" value={form.date} onChange={handleChange} required InputLabelProps={{ shrink: true }} InputProps={{ style: { color: '#222' } }} />
+              <TextField label="Department" name="department" value={form.department} onChange={handleChange} required InputLabelProps={{ style: { color: '#222' } }} InputProps={{ style: { color: '#222' } }} />
+            </Stack>
+          </form>
+        </DialogContent>
+        <DialogActions sx={{ bgcolor: '#fff' }}>
+          <Button onClick={() => setOpen(false)} color="secondary" sx={{ color: '#FF5733' }}>Cancel</Button>
+          <Button type="submit" form="event-form" variant="contained" sx={{ bgcolor: '#FF5733', color: '#fff', fontWeight: 700 }}>Submit</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

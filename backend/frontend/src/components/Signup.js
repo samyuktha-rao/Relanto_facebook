@@ -20,7 +20,7 @@ function Signup({ onSwitch }) {
     setError('');
     try {
       // Default role is 'employee' for signup
-      const res = await fetch('http://localhost:5000/api/signup', {
+      const res = await fetch('http://localhost:5001/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: form.name, email: form.email, password: form.password, role: 'employee' })

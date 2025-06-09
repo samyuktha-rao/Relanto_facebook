@@ -13,7 +13,7 @@ function AppreciationWall({ animated }) {
   const [showAnim, setShowAnim] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/appreciations').then(res => {
+    axios.get('http://localhost:5001/api/appreciations').then(res => {
       const updatedData = res.data.map(app => ({
         ...app,
         reactions: app.reactions || { clap: [], heart: [], thumbsUp: [] },
@@ -48,9 +48,8 @@ function AppreciationWall({ animated }) {
       type: form.type,
       message: form.message
     };
-    axios.post('http://localhost:5000/api/appreciations', payload).then(res => {
-      setApps([...apps, res.data]);
-      setShowAnim(sa => [...sa, true]);
+    axios.post('http://localhost:5001/api/appreciations', payload).then(res => {
+      setApps(prevApps => [...prevApps, res.data]);
       setForm({ from: '', to: '', type: '', message: '' });
     });
   };

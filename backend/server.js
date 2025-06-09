@@ -4,7 +4,6 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const xml2js = require('xml2js');
-const bcrypt = require('bcryptjs');
 const path = require('path');
 const mysql = require('mysql2/promise');
 const { getAnswer } = require('./services/chatbotService');
@@ -21,15 +20,12 @@ app.use('/files', express.static(path.join(__dirname, 'file')));
 
 // Signup endpoint (with role)
 app.post('/api/signup', async (req, res) => {
-  const { name, email, password, role } = req.body;
-  if (!name || !email || !password) return res.status(400).json({ error: 'Missing fields' });
+  const { full_name, username, password, designation } = req.body;
+  if (!full_name || !username || !password) return res.status(400).json({ error: 'Missing fields' });
   try {
-    const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-    if (users.length > 0) return res.status(400).json({ error: 'Email already exists' });
-    const hash = await bcrypt.hash(password, 10);
-    // Default role to 'employee' if not provided
-    const userRole = role && ['admin','employee'].includes(role) ? role : 'employee';
-    await db.query('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [name, email, hash, userRole]);
+    const [employees] = await db.query('SELECT * FROM employees WHERE username = ?', [username]);
+    if (employees.length > 0) return res.status(400).json({ error: 'Username already exists' });
+    await db.query('INSERT INTO employees (full_name, username, password, designation) VALUES (?, ?, ?, ?)', [full_name, username, password, designation]);
     res.json({ success: true });
   } catch (e) {
     res.status(500).json({ error: 'Server error' });
@@ -38,15 +34,14 @@ app.post('/api/signup', async (req, res) => {
 
 // Login endpoint (returns role)
 app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
+  const { username, password } = req.body;
+  if (!username || !password) return res.status(400).json({ error: 'Missing fields' });
   try {
-    const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-    if (users.length === 0) return res.status(400).json({ error: 'Invalid credentials' });
-    const user = users[0];
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ error: 'Invalid credentials' });
-    res.json({ success: true, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+    const [employees] = await db.query('SELECT * FROM employees WHERE username = ?', [username]);
+    if (employees.length === 0) return res.status(400).json({ error: 'Invalid credentials' });
+    const employee = employees[0];
+    if (password !== employee.password) return res.status(400).json({ error: 'Invalid credentials' });
+    res.json({ success: true, employee: { id: employee.id, full_name: employee.full_name, username: employee.username, designation: employee.designation } });
   } catch (e) {
     res.status(500).json({ error: 'Server error' });
   }
@@ -56,10 +51,10 @@ app.use(express.json());
 
 // --- MySQL Database Connection ---
 const db = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: 'localhost',
+  user: 'root',
+  password: 'jerome',
+  database: 'internal_facebook',
 });
 
 // --- Helper to fetch AI news from Google News RSS ---
@@ -212,6 +207,28 @@ app.post('/api/appreciations', async (req, res) => {
   res.json({ id: result.insertId, from, to, type, message, likes: 0 });
 });
 
+// API endpoint to fetch all employees
+app.get('/api/employees', async (req, res) => {
+  try {
+    const [employees] = await db.query('SELECT * FROM employees');
+    res.json(employees);
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    res.status(500).json({ error: 'Failed to fetch employees' });
+  }
+});
+
+// Added /api/events endpoint
+app.get('/api/events', async (req, res) => {
+  try {
+    const [events] = await db.query('SELECT * FROM events');
+    res.json(events);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    res.status(500).json({ error: 'Failed to fetch events' });
+  }
+});
+
 // --- Reactions API ---
 
 // Add or update a reaction for an appreciation post
@@ -257,5 +274,32 @@ app.post('/api/appreciations/:id/reactions', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Test login endpoint (for verification against MySQL Workbench)
+app.post('/api/test-login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
+  try {
+    console.log(`Testing login for email: ${email}`);
+    const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (users.length === 0) {
+      console.log('No user found with the provided email.');
+      return res.status(400).json({ error: 'Invalid credentials' });
+    }
+    const user = users[0];
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      console.log('Password mismatch.');
+      return res.status(400).json({ error: 'Invalid credentials' });
+    }
+    console.log('Login successful:', user);
+    res.json({ success: true, user });
+  } catch (error) {
+    console.error('Error during test login:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

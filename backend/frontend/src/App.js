@@ -29,6 +29,7 @@ import Chatbot from './components/Chatbot';
 import Events from './components/Events';
 import Dashboard from './components/Dashboard';
 import AdminPanel from './components/AdminPanel';
+import OrgChart from './components/OrgChart';
 import img from './pictures/image.png';
 
 
@@ -86,6 +87,7 @@ const navItems = [
   // Directory removed from side menu
   { text: 'Events', to: '/events', icon: <EventIcon /> },
   { text: 'Admin', to: '/admin', icon: <AdminPanelSettingsIcon /> },
+  { text: 'Org Chart', to: '/org-chart', icon: <PeopleIcon /> },
 ];
 
 
@@ -95,9 +97,9 @@ function App() {
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [authPage, setAuthPage] = React.useState('login');
   // Get user from localStorage (if logged in)
-  const user = React.useMemo(() => {
+  const employee = React.useMemo(() => {
     try {
-      return JSON.parse(localStorage.getItem('user'));
+      return JSON.parse(localStorage.getItem('employee'));
     } catch {
       return null;
     }
@@ -109,13 +111,13 @@ function App() {
 
   // Filter nav items for role-based access
   const filteredNavItems = React.useMemo(() => {
-    if (!user) return navItems.filter(item => item.text !== 'Admin');
-    if (user.role === 'admin') return navItems;
+    if (!employee) return navItems.filter(item => item.text !== 'Admin');
+    if (employee.role === 'admin') return navItems;
     return navItems.filter(item => item.text !== 'Admin');
-  }, [user]);
+  }, [employee]);
 
   // If not logged in, show login/signup page only
-  if (!user) {
+  if (!employee) {
     // Import Login and Signup here to avoid duplicate import errors
     const Login = require('./components/Login').default;
     const Signup = require('./components/Signup').default;
@@ -197,13 +199,13 @@ function App() {
                 <Typography variant="h5" sx={{ flexGrow: 1, fontWeight: 700, letterSpacing: 1, color: '#fff' }}>
                   Company Internal Platform
                 </Typography>
-                {user && (
+                {employee && (
                   <Typography sx={{ ml: 2, color: '#00e6e6', fontWeight: 700 }}>
-                    {user.name} ({user.role})
+                    {employee.full_name} ({employee.designation})
                   </Typography>
                 )}
-                {user && (
-                  <Button color="inherit" sx={{ ml: 2, fontWeight: 700, bgcolor: '#FF5733', color: '#fff' }} onClick={() => { localStorage.removeItem('user'); window.location.reload(); }}>Logout</Button>
+                {employee && (
+                  <Button color="inherit" sx={{ ml: 2, fontWeight: 700, bgcolor: '#FF5733', color: '#fff' }} onClick={() => { localStorage.removeItem('employee'); window.location.reload(); }}>Logout</Button>
                 )}
               </Toolbar>
             </AppBar>
@@ -218,7 +220,8 @@ function App() {
                 {/* Directory route removed from main navigation */}
                 <Route path="/events" element={<Events />} />
                 {/* Only allow /admin route for admin users */}
-                {user && user.role === 'admin' && <Route path="/admin" element={<AdminPanel />} />}
+                {employee && employee.role === 'admin' && <Route path="/admin" element={<AdminPanel />} />}
+                <Route path="/org-chart" element={<OrgChart />} />
               </Routes>
             </Container>
           </Box>

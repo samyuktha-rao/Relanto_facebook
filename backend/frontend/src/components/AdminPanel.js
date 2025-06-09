@@ -12,8 +12,8 @@ function AdminPanel() {
   return (
     <div>
       <Typography variant="h4" gutterBottom>Admin Panel</Typography>
-      <Typography variant="h6">Users</Typography>
-      <Stack spacing={1}>{data.employees.map(e => <Card key={e.id}><CardContent>{e.name} - {e.role}</CardContent></Card>)}</Stack>
+      <Typography variant="h6">Employees</Typography>
+      <Stack spacing={1}>{data.employees.map(e => <Card key={e.id}><CardContent>{e.full_name} - {e.designation}</CardContent></Card>)}</Stack>
       <Typography variant="h6" sx={{ mt: 2 }}>Blogs (Moderation)</Typography>
       <Stack spacing={1}>{data.blogs.map(b => <Card key={b.id}><CardContent>{b.title} by {b.author}</CardContent></Card>)}</Stack>
       <Typography variant="h6" sx={{ mt: 2 }}>Appreciations</Typography>

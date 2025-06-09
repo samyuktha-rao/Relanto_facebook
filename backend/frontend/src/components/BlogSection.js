@@ -13,7 +13,7 @@ function BlogSection() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/blogs').then(res => setBlogs(res.data));
+    axios.get('http://localhost:5001/api/blogs').then(res => setBlogs(res.data));
   }, []);
 
   const handleChange = e => {
@@ -28,7 +28,7 @@ function BlogSection() {
       ...form,
       tags: tagsArr
     };
-    axios.post('http://localhost:5000/api/blogs', blogData).then(res => {
+    axios.post('http://localhost:5001/api/blogs', blogData).then(res => {
       setBlogs([...blogs, res.data]);
       setForm({ author: '', title: '', content: '', tags: '' });
       setOpen(false);
